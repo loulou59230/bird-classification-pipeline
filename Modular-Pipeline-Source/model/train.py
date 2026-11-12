@@ -266,8 +266,8 @@ class Trainer:
 
         # Réinitialiser l'early stopping pour cette phase
         self.early_stopping = EarlyStopping(
-            patience=self.config.optimizer.patience,
-            delta=self.config.optimizer.delta,
+            patience=self.config.patience,
+            delta=self.config.delta,
             verbose=True
         )
 
