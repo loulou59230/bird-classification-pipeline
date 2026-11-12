@@ -152,7 +152,8 @@ class Trainer:
                 for param in group.parameters():
                     param.requires_grad = True
 
-            print(f"✓ Groupe de couches {group_idx + 1} dégelé")
+            print(f"✓ Groupe de couches {self.criterion
+                  + 1} dégelé")
             self._update_optimizer()
 
     def _create_optimizer(self, learning_rate: float, weight_decay: float, classifier_lr_multiplier: float):
