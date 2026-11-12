@@ -70,7 +70,7 @@ class Trainer:
         self.current_stage = None
 
         # Configuration du fine-tuning progressif
-        self.progressive_unfreeze = config.fit.progressive_unfreeze
+        self.progressive_unfreeze = config.train.progressive_unfreeze
 
         # Initialisation : geler le backbone, garder le classificateur entraînable
         if self.progressive_unfreeze:
@@ -266,8 +266,8 @@ class Trainer:
 
         # Réinitialiser l'early stopping pour cette phase
         self.early_stopping = EarlyStopping(
-            patience=self.config.patience,
-            delta=self.config.delta,
+            patience=self.config.train.patience,
+            delta=self.config.train.delta,
             verbose=True
         )
 
@@ -418,18 +418,18 @@ class Trainer:
             self.criterion = self.default_criterion
             self.train_loader = self.default_train_loader
             self.optimizer = self._create_optimizer(
-                self.config.fit.learning_rate,
-                self.config.fit.weight_decay,
-                self.config.fit.classifier_lr_multiplier
+                self.config.train.learning_rate,
+                self.config.train.weight_decay,
+                self.config.train.classifier_lr_multiplier
             )
             self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
                 self.optimizer,
-                T_max=self.config.fit.epochs
+                T_max=self.config.train.epochs
             )
 
-            unfreeze_schedule = self.config.fit.unfreeze_schedule if hasattr(self.config.fit, 'unfreeze_schedule') else []
+            unfreeze_schedule = self.config.train.unfreeze_schedule if hasattr(self.config.train, 'unfreeze_schedule') else []
 
-            for epoch in range(self.config.fit.epochs):
+            for epoch in range(self.config.train.epochs):
                 self.current_epoch = epoch
 
                 # Vérifier si des couches doivent être dégelées
@@ -445,7 +445,7 @@ class Trainer:
                 current_lr = self.optimizer.param_groups[0]['lr']
                 self.history["lr"].append(current_lr)
 
-                print(f"Epoch {epoch+1}/{self.config.fit.epochs}")
+                print(f"Epoch {epoch+1}/{self.config.train.epochs}")
                 print(f"  Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.2f}%")
                 print(f"  Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.2f}%")
                 print(f"  Learning Rate: {current_lr:.2e}")
